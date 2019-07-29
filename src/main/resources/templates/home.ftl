@@ -7,8 +7,8 @@
 <body>
 <pre>
     ${value1}
-    Hello home
-    ${value2}!
+    Hello home<br>
+    ${value2!"vvv"}
 
     <!--    colors: $!{colors}-->
     <!--    #foreach($color in $colors)-->
@@ -16,7 +16,7 @@
     <!--    #end-->
 <#--    -->
     <#list colors as color>
-        ${color}
+        ${color_index}${color}
     </#list>
 </pre>
 
