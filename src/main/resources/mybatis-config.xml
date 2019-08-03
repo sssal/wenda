@@ -9,7 +9,7 @@
         <!-- 设置超时时间，它决定驱动等待数据库响应的秒数 -->
         <setting name="defaultStatementTimeout" value="3000"/>
         <!--驼峰命名，就是head_url可以转化为headUrl-->
-        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!--        <setting name="mapUnderscoreToCamelCase" value="true"/>-->
         <!-- 允许 JDBC 支持自动生成主键，需要驱动兼容，如果设置为 true 则这个设置强制使用自动生成主键 -->
         <setting name="useGeneratedKeys" value="true"/>
     </settings>

@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN" dropeffect="none"
+      class="js is-AppPromotionBarVisible cssanimations csstransforms csstransitions flexbox no-touchevents no-mobile"
+      style="" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+</head>
+<body>
+<div th:each="vo:${vos}">
+    <span th:text="${vo.get('user').name}"></span>
+</div>
+</body>
+</html>
