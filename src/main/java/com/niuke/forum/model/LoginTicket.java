@@ -4,17 +4,17 @@ import java.util.Date;
 
 public class LoginTicket {
     private int id;
-    private int userId;
+    private int user_id;
     private Date expired;
     private int status;
     private String ticket;
 
     public int getUserId() {
-        return userId;
+        return user_id;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserId(int user_id) {
+        this.user_id = user_id;
     }
 
     public int getId() {
