@@ -58,4 +58,6 @@ public class Question {
     public void setComment_count(int comment_count) {
         this.comment_count = comment_count;
     }
+
+
 }

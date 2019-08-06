@@ -5,14 +5,20 @@ import com.niuke.forum.dao.UserDAO;
 import com.niuke.forum.model.LoginTicket;
 import com.niuke.forum.model.User;
 import com.niuke.forum.util.ForumUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+//import org.apache.commons.lang.StringUtils;
+
 
 import java.util.*;
 
 @Service
 public class UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     @Autowired
     UserDAO userDAO;
 
@@ -23,6 +29,9 @@ public class UserService {
         return userDAO.selectById(id);
     }
 
+    public void logout(String ticket) {
+        loginTicketDAO.updataStatus(ticket, 1);
+    }
     public Map<String, String> register(String userName, String password) {
         Map<String, String> map = new HashMap<>();
         if (StringUtils.isEmpty(userName)) {
@@ -94,5 +103,10 @@ public class UserService {
         loginTicketDAO.addTicket(loginTicket);
 
         return loginTicket.getTicket();
+    }
+
+
+    public User selectUserByName(String toName) {
+        return userDAO.selectByName(toName);
     }
 }
