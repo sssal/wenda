@@ -27,9 +27,15 @@ public class QuestionService {
         return questionDAO.addQuestion(question) > 0 ? question.getId() : 0;
 
     }
+
+    public Question selectQuestionById(int id) {
+        return questionDAO.selectQuestionById(id);
+    }
+
     public List<Question> getLatestQuestions(int user_id, int offset, int limit) {
         return questionDAO.selectLatestQuestions(user_id, offset, limit);
     }
+
 
     public int updateCommentCount(int id, int count) {
         return questionDAO.updateCommentCount(id, count);

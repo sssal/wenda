@@ -20,6 +20,7 @@ public interface QuestionDAO {
     @Select({"select ", SELECT_FIELDS, "from", TABLE_NAME, "where id=#{id}"})
     Question selectQuestionById(int id);
 
+
     //xml 配置mybatis
     List<Question> selectLatestQuestions(@Param("user_id") int user_id,
                                          @Param("offset") int offset,
