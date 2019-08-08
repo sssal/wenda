@@ -4,6 +4,7 @@ import com.niuke.forum.model.Message;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,14 +19,20 @@ public interface MessageDAO {
     @Insert({"insert into ", TABLE_NAME, "(", INSERT_FIELDS, ") values (#{fromId},#{toId},#{content},#{hasRead},#{conversationId},#{createdDate})"})
     int addMessage(Message message);
 
-    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where conversation_id=#{conversationId} order by created_date desc limit #{offset}, #{limit}"})
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME,
+            " where conversation_id=#{conversationId} order by created_date desc limit #{offset}, #{limit}"})
     List<Message> getConversationDetail(String conversationId, int offset, int limit);
 
-    // 注意这里把count(id)的值设到了id字段
+    //count(id) 没有存储位置
+    //因此把count(id)的值设到了id字段
     @Select({"select ", INSERT_FIELDS, " , count(id) as id from ( select * from ", TABLE_NAME,
             " where from_id=#{userId} or to_id=#{userId} order by created_date desc) tt group by conversation_id order by created_date desc limit #{offset}, #{limit}"})
     List<Message> getConversationList(int userId, int offset, int limit);
 
-    @Select({"select count(id) from ", TABLE_NAME, " where has_read=0 and to_id=#{userId} and conversation_id=#{conversationId}"})
+    @Select({"select count(id) from ", TABLE_NAME,
+            " where has_read=0 and to_id=#{userId} and conversation_id=#{conversationId}"})
     int getConversationUnreadCount(int userId, String conversationId);
+
+    @Update({"update ", TABLE_NAME, "set has_read=1 where id=#{id}"})
+    int updateHasRead(int id);
 }

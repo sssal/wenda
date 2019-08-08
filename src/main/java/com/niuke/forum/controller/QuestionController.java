@@ -1,7 +1,7 @@
 package com.niuke.forum.controller;
 
-import com.niuke.forum.model.HostHolder;
-import com.niuke.forum.model.Question;
+import com.niuke.forum.model.*;
+import com.niuke.forum.service.CommentService;
 import com.niuke.forum.service.QuestionService;
 import com.niuke.forum.service.UserService;
 import com.niuke.forum.util.ForumUtil;
@@ -12,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class QuestionController {
@@ -26,6 +28,9 @@ public class QuestionController {
 
     @Autowired
     HostHolder hostHolder;
+
+    @Autowired
+    CommentService commentService;
 
     @RequestMapping(path = "/question/add", method = {RequestMethod.POST})
     @ResponseBody
@@ -57,11 +62,22 @@ public class QuestionController {
         return ForumUtil.getJsonString(1, "失败");
     }
 
-    @RequestMapping(path = "/question/{qid}")
+    @RequestMapping(path = "/question/{qid}", method = {RequestMethod.GET})
     public String questionDetail(Model model, @PathVariable("qid") int qid) {
         Question question = questionService.selectQuestionById(qid);
+//        Question question = questionService.
         model.addAttribute("question", question);
-        model.addAttribute("user", userService.getUser(question.getUser_id()));
+
+        List<Comment> commentList = commentService.getCommentsByEntity(qid, EntityType.ENTITY_QUESTION);
+        List<ViewObject> comments = new ArrayList<ViewObject>();
+        for (Comment comment : commentList) {
+            ViewObject vo = new ViewObject();
+            vo.set("comment", comment);
+            vo.set("user", userService.getUser(comment.getUserId()));
+            comments.add(vo);
+        }
+        model.addAttribute("comments", comments);
+//        model.addAttribute("user", userService.getUser(question.getUser_id()));
         return "detail";
     }
 }
