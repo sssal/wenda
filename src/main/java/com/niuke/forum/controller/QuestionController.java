@@ -2,6 +2,7 @@ package com.niuke.forum.controller;
 
 import com.niuke.forum.model.*;
 import com.niuke.forum.service.CommentService;
+import com.niuke.forum.service.LikeService;
 import com.niuke.forum.service.QuestionService;
 import com.niuke.forum.service.UserService;
 import com.niuke.forum.util.ForumUtil;
@@ -32,6 +33,8 @@ public class QuestionController {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    LikeService likeService;
     @RequestMapping(path = "/question/add", method = {RequestMethod.POST})
     @ResponseBody
     public String addQuestion(@RequestParam("title") String title,
@@ -73,6 +76,13 @@ public class QuestionController {
         for (Comment comment : commentList) {
             ViewObject vo = new ViewObject();
             vo.set("comment", comment);
+
+            if (hostHolder.getUser() == null) {
+                vo.set("liked", 0);
+            } else {
+                vo.set("liked", likeService.getLikeStatus(hostHolder.getUser().getId(), EntityType.ENTITY_COMMENT, comment.getId()));
+            }
+            vo.set("likeCount", likeService.getLikeCount(EntityType.ENTITY_COMMENT, comment.getId()));
             vo.set("user", userService.getUser(comment.getUserId()));
             comments.add(vo);
         }
