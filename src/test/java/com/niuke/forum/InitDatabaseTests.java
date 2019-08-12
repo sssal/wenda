@@ -2,8 +2,10 @@ package com.niuke.forum;
 
 import com.niuke.forum.dao.QuestionDAO;
 import com.niuke.forum.dao.UserDAO;
+import com.niuke.forum.model.EntityType;
 import com.niuke.forum.model.Question;
 import com.niuke.forum.model.User;
+import com.niuke.forum.service.FollowService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class InitDatabaseTests {
     @Autowired
     QuestionDAO questionDAO;
 
+    @Autowired
+    FollowService followService;
+
     @Test
     public void initDatabase() {
         Random random = new Random();
@@ -35,6 +40,11 @@ public class InitDatabaseTests {
             user.setPassword("XX");
             user.setSalt("");
             userDAO.addUser(user);
+
+            //互相关注
+            for (int j = 1; j < i; j++) {
+                followService.follow(j, EntityType.ENTITY_COMMENT, i);
+            }
 
             Question question = new Question();
             question.setComment_count(i);
