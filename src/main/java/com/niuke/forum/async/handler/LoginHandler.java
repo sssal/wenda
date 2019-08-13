@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+
 public class LoginHandler implements EventHandler {
     @Override
     public void doHandle(EventModel model) {
