@@ -1,10 +1,7 @@
 package com.niuke.forum.controller;
 
 import com.niuke.forum.model.*;
-import com.niuke.forum.service.CommentService;
-import com.niuke.forum.service.LikeService;
-import com.niuke.forum.service.QuestionService;
-import com.niuke.forum.service.UserService;
+import com.niuke.forum.service.*;
 import com.niuke.forum.util.ForumUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +29,9 @@ public class QuestionController {
 
     @Autowired
     CommentService commentService;
+
+    @Autowired
+    FollowService followService;
 
     @Autowired
     LikeService likeService;
@@ -88,6 +88,29 @@ public class QuestionController {
         }
         model.addAttribute("comments", comments);
 //        model.addAttribute("user", userService.getUser(question.getUser_id()));
+
+
+        List<ViewObject> followUsers = new ArrayList<>();
+        // 获取关注的用户信息
+        List<Integer> users = followService.getFollowers(EntityType.ENTITY_QUESTION, qid, 20);
+        for (Integer userId : users) {
+            ViewObject vo = new ViewObject();
+            User u = userService.getUser(userId);
+            if (u == null) {
+                continue;
+            }
+            vo.set("name", u.getName());
+            vo.set("headUrl", u.getHead_url());
+            vo.set("id", u.getId());
+            followUsers.add(vo);
+        }
+        model.addAttribute("followUsers", followUsers);
+        if (hostHolder.getUser() != null) {
+            model.addAttribute("followed", followService.isFollower(hostHolder.getUser().getId(), EntityType.ENTITY_QUESTION, qid));
+        } else {
+            model.addAttribute("followed", false);
+        }
+
         return "detail";
     }
 }
