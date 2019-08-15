@@ -5,11 +5,10 @@ import com.niuke.forum.async.EventHandler;
 import com.niuke.forum.async.EventModel;
 import com.niuke.forum.async.EventType;
 import com.niuke.forum.model.*;
-import com.niuke.forum.service.FeedService;
-import com.niuke.forum.service.MessageService;
-import com.niuke.forum.service.QuestionService;
-import com.niuke.forum.service.UserService;
+import com.niuke.forum.service.*;
 import com.niuke.forum.util.ForumUtil;
+import com.niuke.forum.util.JedisAdapter;
+import com.niuke.forum.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +27,12 @@ public class FeedHandler implements EventHandler {
 
     @Autowired
     FeedService feedService;
+
+    @Autowired
+    FollowService followService;
+
+    @Autowired
+    JedisAdapter jedisAdapter;
 
     private String buildFeedDate(EventModel model) {
         Map<String, String> map = new HashMap<>();
@@ -64,6 +69,14 @@ public class FeedHandler implements EventHandler {
         }
         feedService.addFeed(feed);
 
+
+        List<Integer> followers = followService.getFollowers(EntityType.ENTITY_USER, model.getActorId(), Integer.MAX_VALUE);
+        followers.add(0);
+        //给所有粉丝推事件
+        for (int follower : followers) {
+            String timelineKey = RedisKeyUtil.getTimelineKey(follower);
+            jedisAdapter.lpush(timelineKey, String.valueOf(feed.getId()));
+        }
     }
 
     @Override
